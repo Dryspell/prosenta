@@ -18,11 +18,13 @@
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^9.0.1",
+    "@react-three/csg": "^2.2.0",
     "@react-three/drei": "^9.77.3",
     "@react-three/fiber": "^8.13.3",
     "glsl-random": "^0.0.5",
     "maath": "^0.7.0",
     "next": "^13.4.7",
+    "nice-color-palettes": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.153.0",
