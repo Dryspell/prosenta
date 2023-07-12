@@ -70,23 +70,23 @@ export default function App() {
           shadows
           camera={{ position: [-30, 10, 30], fov: 25 }}
         >
-          <Stage
+          {/* <Stage
             intensity={1.5}
             environment='city'
             // shadows={{ type: 'accumulative', color: '#d9afd9', opacity: 2, colorBlend: 2 }}
             adjustCamera={1.5}
-          >
-            {gameState.current.houses.map((house) => {
-              return (
-                <>
-                  ({<House visible={!house.hidden} oid={house.name} key={house.name} position={house.position} />})
-                  <Text key={house.name} position={new Vector3(...house.position)} fontSize={1} color='black'>
-                    {house.name}
-                  </Text>
-                </>
-              )
-            })}
-          </Stage>
+          > */}
+          {gameState.current.houses.map((house) => {
+            return (
+              <>
+                ({<House visible={!house.hidden} oid={house.name} key={house.name} position={house.position} />})
+                <Text key={house.name} position={new Vector3(...house.position)} fontSize={1} color='black'>
+                  {house.name}
+                </Text>
+              </>
+            )
+          })}
+          {/* </Stage> */}
           <color attach='background' args={['skyblue']} />
           <Environment direction={[5, 5, 5]} />
           <OrbitControls makeDefault />

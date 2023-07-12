@@ -34,6 +34,7 @@ export default function Page() {
         <Physics gravity={[0, -4, 0]}>
           <Scene position={[1, 0, -1.5]} />
           <Hats />
+          {/* @ts-expect-error */}
           <RigidBody position={[0, -1, 0]} type='fixed' colliders='false'>
             <CuboidCollider restitution={0.1} args={[1000, 1, 1000]} />
           </RigidBody>
@@ -77,6 +78,7 @@ export default function Page() {
 }
 
 function Scene(props) {
+  // @ts-expect-error
   const { nodes, materials } = useGLTF('/models/Tribal.gltf')
   return (
     <group {...props} dispose={null}>
@@ -90,18 +92,20 @@ function Scene(props) {
 }
 
 function Hats({ count = 80, rand = MathUtils.randFloatSpread }) {
+  // @ts-expect-error
   const { nodes, materials } = useGLTF('/models/Ninja.gltf')
   const positions = Array.from({ length: count }, (_, i) => [rand(2) + 1, 10 + i / 2, rand(2) - 2])
   const rotations = Array.from({ length: count }, () => [Math.random(), Math.random(), Math.random()])
   return (
-    <InstancedRigidBodies positions={positions} rotations={rotations} colliders='hull'>
-      <instancedMesh receiveShadow castShadow args={[undefined, undefined, count]} dispose={null}>
-        {/* Merging the hat into one clump bc instances need a single geometry to function */}
-        <Addition useGroups>
-          {/* <Brush a geometry={nodes.Cube092.geometry} material={materials.Material} />
-          <Brush b geometry={nodes.Cube092_1.geometry} material={materials.boxCap} /> */}
-        </Addition>
-      </instancedMesh>
-    </InstancedRigidBodies>
+    <group dispose={null}></group>
+    // <InstancedRigidBodies positions={positions} rotations={rotations} colliders='hull'>
+    //   <instancedMesh receiveShadow castShadow args={[undefined, undefined, count]} dispose={null}>
+    //     {/* Merging the hat into one clump bc instances need a single geometry to function */}
+    //     <Addition useGroups>
+    //       <Brush a geometry={nodes.Cube092.geometry} material={materials.Material} />
+    //       <Brush b geometry={nodes.Cube092_1.geometry} material={materials.boxCap} />
+    //     </Addition>
+    //   </instancedMesh>
+    // </InstancedRigidBodies>
   )
 }
