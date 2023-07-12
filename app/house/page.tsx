@@ -54,9 +54,18 @@ export default function App() {
             return (
               <>
                 (
-                {!house.hidden && (
-                  <House key={house.name} position={house.position} onPointerEnter={() => console.log('hovered!')} />
-                )}
+                {
+                  <House
+                    visible={!house.hidden}
+                    oid={house.name}
+                    key={house.name}
+                    position={house.position}
+                    // onPointerEnter={() => {
+                    //   console.log('hovered!')
+                    //   house.hidden = !house.hidden
+                    // }}
+                  />
+                }
                 )
                 <Text key={house.name} position={house.position as Vector3} fontSize={1} color='black'>
                   {house.name}

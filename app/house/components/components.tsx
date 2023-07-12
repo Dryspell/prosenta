@@ -1,5 +1,6 @@
+'use client'
 import * as THREE from 'three'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { PivotControls } from '@react-three/drei'
 import { Geometry, Base, Subtraction, Addition, CSGGeometryRef } from '@react-three/csg'
 
@@ -9,17 +10,21 @@ const tri = new THREE.CylinderGeometry(1, 1, 2, 3)
 
 export function House(props) {
   const csg = useRef<CSGGeometryRef>()
-  const selected = useRef(false)
+  const meshRef = useRef<THREE.Mesh>()
+  const [selected, setSelected] = useState(false)
+
   return (
     <mesh
+      ref={meshRef}
       receiveShadow
       castShadow
       {...props}
       onPointerEnter={() => {
-        selected.current = !selected.current
-        console.log(selected.current)
+        setSelected(!selected)
+        console.log({ selected, oid: props.oid })
       }}
-      scale={selected ? [2, 2, 2] : [1, 1, 1]}
+      // onPointerOut={() => {}}
+      scale={selected ? [1.1, 1.1, 1.1] : [1, 1, 1]}
     >
       <Geometry ref={csg} computeVertexNormals>
         <Base name='base' geometry={box} scale={[3, 3, 3]} />
