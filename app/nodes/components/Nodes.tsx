@@ -54,7 +54,7 @@ export function Nodes({ children }) {
       </group>
       {children}
       {lines.map(({ start, end }, index) => (
-        <group key={index} position-z={1}>
+        <group key={`line_${index}`} position-z={1}>
           {/* @ts-expect-error */}
           <Circle position={start} />
           {/* @ts-expect-error */}

@@ -5,12 +5,18 @@ Command: npx gltfjsx@6.2.5 public/models/Ninja.gltf -o src/components/Ninja.jsx
 
 import React, { useEffect, useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
+import { useConfigurator } from '../../../app/table-controller/Context'
 
 export function Ninja({ hovered, ...props }) {
   const group = useRef()
   // @ts-expect-error
   const { nodes, materials, animations } = useGLTF('/models/Ninja.gltf')
   const { actions } = useAnimations(animations, group)
+  let { legs, body, arms, head, weapon, hands, belt, sword } = useConfigurator()
+  body = body || 1
+  hands = hands || 1
+  belt = belt || 1
+  sword = sword || 1
 
   // @ts-expect-error
   useEffect(() => {
@@ -25,30 +31,47 @@ export function Ninja({ hovered, ...props }) {
         <group name='CharacterArmature'>
           <primitive object={nodes.Root} />
           <group name='Ninja'>
-            <skinnedMesh
-              name='Cube092'
-              geometry={nodes.Cube092.geometry}
-              material={materials.Ninja_Main}
-              skeleton={nodes.Cube092.skeleton}
-            />
-            <skinnedMesh
-              name='Cube092_1'
-              geometry={nodes.Cube092_1.geometry}
-              material={materials.Ninja_Secondary}
-              skeleton={nodes.Cube092_1.skeleton}
-            />
-            <skinnedMesh
-              name='Cube092_2'
-              geometry={nodes.Cube092_2.geometry}
-              material={materials.Belt}
-              skeleton={nodes.Cube092_2.skeleton}
-            />
-            <skinnedMesh
-              name='Cube092_3'
-              geometry={nodes.Cube092_3.geometry}
-              material={materials.Gold}
-              skeleton={nodes.Cube092_3.skeleton}
-            />
+            {body && (
+              <skinnedMesh
+                visible={body?.visible ?? true}
+                name='Cube092'
+                geometry={nodes.Cube092.geometry}
+                material={materials.Ninja_Main}
+                skeleton={nodes.Cube092.skeleton}
+              />
+            )}
+            {hands && (
+              <skinnedMesh
+                name='Cube092_1'
+                geometry={nodes.Cube092_1.geometry}
+                material={materials.Ninja_Secondary}
+                skeleton={nodes.Cube092_1.skeleton}
+              />
+            )}
+            {belt && (
+              <skinnedMesh
+                name='Cube092_2'
+                geometry={nodes.Cube092_2.geometry}
+                material={materials.Belt}
+                skeleton={nodes.Cube092_2.skeleton}
+              />
+            )}
+            {sword && (
+              <>
+                <skinnedMesh
+                  name='Cube092_3'
+                  geometry={nodes.Cube092_3.geometry}
+                  material={materials.Gold}
+                  skeleton={nodes.Cube092_3.skeleton}
+                />
+                <skinnedMesh
+                  name='Cube092_6'
+                  geometry={nodes.Cube092_6.geometry}
+                  material={materials.Birb_Secondary}
+                  skeleton={nodes.Cube092_6.skeleton}
+                />
+              </>
+            )}
             <skinnedMesh
               name='Cube092_4'
               geometry={nodes.Cube092_4.geometry}
@@ -60,12 +83,6 @@ export function Ninja({ hovered, ...props }) {
               geometry={nodes.Cube092_5.geometry}
               material={materials.Eye_White}
               skeleton={nodes.Cube092_5.skeleton}
-            />
-            <skinnedMesh
-              name='Cube092_6'
-              geometry={nodes.Cube092_6.geometry}
-              material={materials.Birb_Secondary}
-              skeleton={nodes.Cube092_6.skeleton}
             />
           </group>
         </group>

@@ -10,6 +10,7 @@ import { memo } from 'react'
 import { AccumulativeShadows, RandomizedLight, Environment as EnvironmentImpl } from '@react-three/drei'
 import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
 import { House } from './components/components'
+extend({ OrbitControls, Text, Canvas })
 
 export const Environment = memo(
   ({ direction = [5, 5, 5] }: { direction: Parameters<typeof RandomizedLight>[0]['position'] }) => (
@@ -25,7 +26,6 @@ export const Environment = memo(
     </>
   ),
 )
-
 Environment.displayName = 'Environment'
 
 export default function App() {
@@ -53,20 +53,7 @@ export default function App() {
           {gameState.current.houses.map((house) => {
             return (
               <>
-                (
-                {
-                  <House
-                    visible={!house.hidden}
-                    oid={house.name}
-                    key={house.name}
-                    position={house.position}
-                    // onPointerEnter={() => {
-                    //   console.log('hovered!')
-                    //   house.hidden = !house.hidden
-                    // }}
-                  />
-                }
-                )
+                ({<House visible={!house.hidden} oid={house.name} key={house.name} position={house.position} />})
                 <Text key={house.name} position={house.position as Vector3} fontSize={1} color='black'>
                   {house.name}
                 </Text>
