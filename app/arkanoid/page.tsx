@@ -23,7 +23,7 @@ export default function App() {
   )
 }
 
-export function Ball() {
+function Ball() {
   const ref: Ref<typeof RigidBody> = useRef()
   const { viewport } = useThree()
   const onCollisionEnter = () => (
@@ -52,7 +52,7 @@ export function Ball() {
   )
 }
 
-export const Enemy = ({ position, color }) => (
+const Enemy = ({ position, color }) => (
   <RigidBody colliders='cuboid' type='fixed' position={position} restitution={2.1}>
     <mesh>
       <boxGeometry args={[2.5, 1, 1]} />
@@ -61,7 +61,7 @@ export const Enemy = ({ position, color }) => (
   </RigidBody>
 )
 
-export function Paddle({ euler = new THREE.Euler(), quaternion = new THREE.Quaternion() }) {
+function Paddle({ euler = new THREE.Euler(), quaternion = new THREE.Quaternion() }) {
   const ref = useRef<any>()
   useFrame(({ pointer, viewport }) => {
     ref.current && ref.current.setTranslation({ x: (pointer.x * viewport.width) / 2, y: -viewport.height / 3, z: 0 })
