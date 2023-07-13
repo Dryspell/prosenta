@@ -1,3 +1,6 @@
+export default function App() {
+  return <div></div>
+}
 // 'use client'
 // import * as THREE from 'three'
 // import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'

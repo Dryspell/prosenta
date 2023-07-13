@@ -34,10 +34,10 @@ export const Interface = () => {
               }}
               min={50}
               max={200}
-              value={arms}
+              value={arms.visible ? 100 : 0}
               onChange={(e) => {
                 // console.log(`tableWidth: ${(e.target as HTMLInputElement).value}`)
-                setArms(parseInt((e.target as HTMLInputElement).value))
+                setArms({ ...arms, visible: Boolean(parseInt((e.target as HTMLInputElement).value)) })
               }}
               valueLabelDisplay='auto'
             />

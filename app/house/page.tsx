@@ -12,7 +12,7 @@ import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
 import { House } from './components/components'
 extend({ OrbitControls, Text, Canvas })
 
-export const Environment = memo(
+const Environment = memo(
   ({ direction = [5, 5, 5] }: { direction: Parameters<typeof RandomizedLight>[0]['position'] }) => (
     <>
       <directionalLight position={direction} intensity={0.5} shadow-mapSize={1024} castShadow />
