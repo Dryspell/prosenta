@@ -1,8 +1,8 @@
 'use client'
 import * as THREE from 'three'
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
-import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
-import { Ref, Suspense, memo, useRef, useState } from 'react'
+import { CuboidCollider, Physics, RapierRigidBody, RigidBody } from '@react-three/rapier'
+import { Fragment, Ref, Suspense, memo, useRef, useState } from 'react'
 import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
 import {
   AccumulativeShadows,
@@ -10,6 +10,7 @@ import {
   QuadraticBezierLine,
   RandomizedLight,
   Environment as EnvironmentImpl,
+  Html,
 } from '@react-three/drei'
 import { Vector3 } from 'three'
 extend({ Canvas })
@@ -30,36 +31,67 @@ extend({ Canvas })
 // )
 // Environment.displayName = 'Environment'
 
-const Enemy = ({ position, color, visible, name }) => {
-  const [onHover, setOnHover] = useState(false)
+const Enemy = ({
+  color,
+  visible,
+  name,
+  hovered,
+  setHovered,
+  unit,
+}: {
+  color: string
+  visible: boolean
+  name: string
+  hovered?: boolean
+  setHovered?: (hovered: boolean) => void
+  unit: (typeof defaults.gameState)[0]
+}) => {
+  const rigidBodyRef = useRef<RapierRigidBody>()
+
   return (
-    <RigidBody colliders='cuboid' type='fixed' position={position} restitution={2.1}>
+    <RigidBody
+      ref={rigidBodyRef}
+      linearVelocity={[Math.random() * 5, Math.random() * 5, Math.random() * 5]}
+      colliders='cuboid'
+      type='dynamic'
+      position={unit.position as [number, number, number]}
+      restitution={2.1}
+    >
       <mesh
         visible={visible}
-        scale={onHover ? [1.1, 1.1, 1.1] : [1, 1, 1]}
-        onPointerEnter={() => setOnHover(!onHover)}
-        onPointerLeave={() => setOnHover(!onHover)}
+        scale={hovered ? [1.1, 1.1, 1.1] : [1, 1, 1]}
+        onPointerEnter={() => setHovered(!hovered)}
+        onPointerLeave={() => setHovered(!hovered)}
         onClick={() => console.log(name)}
       >
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color={onHover ? 'orange' : color} />
+        <meshStandardMaterial color={hovered ? 'orange' : color} />
+        {visible && (
+          <Html>
+            <div>
+              <h1>{name}</h1>
+            </div>
+          </Html>
+        )}
       </mesh>
     </RigidBody>
   )
 }
 
-const defaults = { boxCount: 20 }
+const DEFAULT_WIDTH = 20
+const defaults = {
+  boxCount: DEFAULT_WIDTH,
+  gameState: Array.from({ length: DEFAULT_WIDTH }, (_, x) =>
+    Array.from({ length: 1 || DEFAULT_WIDTH }, (_, y) =>
+      Array.from({ length: DEFAULT_WIDTH }, (_, z) => ({
+        position: [2 * x - DEFAULT_WIDTH, 2 * y - DEFAULT_WIDTH / 2, 2 * z - DEFAULT_WIDTH],
+      })),
+    ),
+  ).flat(2),
+}
 
 export default function App() {
-  const gameState = useRef(
-    Array.from({ length: defaults.boxCount }, (_, x) =>
-      Array.from({ length: 1 || defaults.boxCount }, (_, y) =>
-        Array.from({ length: defaults.boxCount }, (_, z) => ({
-          position: [2 * x - defaults.boxCount, 2 * y - defaults.boxCount / 2, 2 * z - defaults.boxCount],
-        })),
-      ),
-    ).flat(2),
-  )
+  const gameState = useRef(defaults.gameState)
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
@@ -72,22 +104,34 @@ export default function App() {
           {gameState.current.map((g) => {
             const visible = Math.random() > 0.5
             return (
-              <>
+              <Fragment key={String(g.position)}>
                 {Math.random() > 0.5 && visible && (
                   <QuadraticBezierLine
                     start={new Vector3(...g.position)}
-                    mid={new Vector3(...gameState.current[Math.floor(Math.random() * defaults.boxCount ** 2)].position)}
-                    end={new Vector3(...gameState.current[Math.floor(Math.random() * defaults.boxCount ** 2)].position)}
+                    mid={
+                      gameState.current[Math.floor(Math.random() * defaults.boxCount ** 2)].position as [
+                        number,
+                        number,
+                        number,
+                      ]
+                    }
+                    end={
+                      gameState.current[Math.floor(Math.random() * defaults.boxCount ** 2)].position as [
+                        number,
+                        number,
+                        number,
+                      ]
+                    }
                   />
                 )}
                 <Enemy
+                  unit={g}
                   visible={visible}
                   key={g.position.join('_')}
                   name={g.position.join('_')}
                   color='hotpink'
-                  position={g.position}
                 />
-              </>
+              </Fragment>
             )
           })}
           {/* <Enemy color='orange' position={[2.75, 1.5, 0]} />
