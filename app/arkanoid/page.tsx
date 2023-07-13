@@ -1,9 +1,10 @@
 'use client'
 import * as THREE from 'three'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
 import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
 import { Ref, Suspense, useRef } from 'react'
 import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
+extend({ Canvas })
 
 export default function App() {
   return (
@@ -22,7 +23,7 @@ export default function App() {
   )
 }
 
-function Ball() {
+export function Ball() {
   const ref: Ref<typeof RigidBody> = useRef()
   const { viewport } = useThree()
   const onCollisionEnter = () => (
@@ -51,7 +52,7 @@ function Ball() {
   )
 }
 
-const Enemy = ({ position, color }) => (
+export const Enemy = ({ position, color }) => (
   <RigidBody colliders='cuboid' type='fixed' position={position} restitution={2.1}>
     <mesh>
       <boxGeometry args={[2.5, 1, 1]} />
@@ -60,7 +61,7 @@ const Enemy = ({ position, color }) => (
   </RigidBody>
 )
 
-function Paddle({ euler = new THREE.Euler(), quaternion = new THREE.Quaternion() }) {
+export function Paddle({ euler = new THREE.Euler(), quaternion = new THREE.Quaternion() }) {
   const ref = useRef<any>()
   useFrame(({ pointer, viewport }) => {
     ref.current && ref.current.setTranslation({ x: (pointer.x * viewport.width) / 2, y: -viewport.height / 3, z: 0 })

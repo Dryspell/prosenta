@@ -12,11 +12,9 @@ export function Ninja({ hovered, ...props }) {
   // @ts-expect-error
   const { nodes, materials, animations } = useGLTF('/models/Ninja.gltf')
   const { actions } = useAnimations(animations, group)
-  let { legs, body, arms, head, weapon, hands, belt, sword } = useConfigurator()
-  body = body || 1
-  hands = hands || 1
-  belt = belt || 1
-  sword = sword || 1
+  let { legs, body, arms, head, weapon } = useConfigurator()
+  const hands = 1
+  const belt = 1
 
   // @ts-expect-error
   useEffect(() => {
@@ -56,7 +54,7 @@ export function Ninja({ hovered, ...props }) {
                 skeleton={nodes.Cube092_2.skeleton}
               />
             )}
-            {sword && (
+            {weapon.visible && (
               <>
                 <skinnedMesh
                   name='Cube092_3'

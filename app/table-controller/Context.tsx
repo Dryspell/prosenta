@@ -1,37 +1,43 @@
 import { createContext, useContext, useState } from 'react'
 
-const defaults = { legs: { color: '#777777', visible: true, layout: 'standard' } }
+const defaults = {
+  legs: { color: '#777777', visible: true, layout: 'standard' },
+  arms: { color: '#777777', visible: true, layout: 'standard' },
+  head: { color: '#777777', visible: true, layout: 'standard' },
+  body: { color: '#777777', visible: true, layout: 'standard' },
+  weapon: { color: '#777777', visible: true, layout: 'standard' },
+}
 
 const ConfiguratorContext = createContext<{
   legs: typeof defaults.legs
   setLegs: (legs: typeof defaults.legs) => void
-  arms: number
-  setArms: (arms: number) => void
-  head: number
-  setHead: (head: number) => void
-  body: number
-  setBody: (body: number) => void
-  weapon: number
-  setWeapon: (weapon: number) => void
+  arms: typeof defaults.arms
+  setArms: (arms: typeof defaults.arms) => void
+  head: typeof defaults.head
+  setHead: (head: typeof defaults.head) => void
+  body: typeof defaults.body
+  setBody: (body: typeof defaults.body) => void
+  weapon: typeof defaults.weapon
+  setWeapon: (weapon: typeof defaults.weapon) => void
 }>({
   legs: defaults.legs,
   setLegs: () => {},
-  arms: 0,
+  arms: defaults.arms,
   setArms: () => {},
-  head: 0,
+  head: defaults.head,
   setHead: () => {},
-  body: 0,
+  body: defaults.body,
   setBody: () => {},
-  weapon: 0,
+  weapon: defaults.weapon,
   setWeapon: () => {},
 })
 
 export const ConfiguratorProvider = ({ children }) => {
   const [legs, setLegs] = useState(defaults.legs)
-  const [arms, setArms] = useState(0)
-  const [head, setHead] = useState(0)
-  const [body, setBody] = useState(0)
-  const [weapon, setWeapon] = useState(0)
+  const [arms, setArms] = useState(defaults.arms)
+  const [head, setHead] = useState(defaults.head)
+  const [body, setBody] = useState(defaults.body)
+  const [weapon, setWeapon] = useState(defaults.weapon)
 
   const value = {
     legs,

@@ -1,39 +1,81 @@
 'use client'
-
-import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
+import * as THREE from 'three'
+import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
+import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
+import { Ref, Suspense, useRef, useState } from 'react'
+import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
+import { Environment } from '../city/page'
+import { OrbitControls, QuadraticBezierLine } from '@react-three/drei'
 import { Vector3 } from 'three'
+extend({ Canvas })
 
-const View = dynamic(() => import('src/components/canvas/View').then((mod) => mod.View), {
-  ssr: false,
-  loading: () => (
-    <div className='flex h-96 w-full flex-col items-center justify-center'>
-      <svg className='-ml-1 mr-3 h-5 w-5 animate-spin text-black' fill='none' viewBox='0 0 24 24'>
-        <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
-        <path
-          className='opacity-75'
-          fill='currentColor'
-          d='M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-        />
-      </svg>
-    </div>
-  ),
-})
-const Common = dynamic(() => import('src/components/canvas/View').then((mod) => mod.Common), { ssr: false })
-
-const MeshPortal = dynamic(() => import('src/components/canvas/MeshPortal').then((mod) => mod.PortalScene), {
-  ssr: false,
-})
-
-export default function Page() {
+const Enemy = ({ position, color, visible, name }) => {
+  const [onHover, setOnHover] = useState(false)
   return (
-    <>
-      <View className='absolute top-0 flex h-screen w-full flex-col items-center justify-center'>
-        <Suspense fallback={<div>Loading...</div>}>
-          <MeshPortal />
-          <Common cameraPosition={[0, 0, 10]} />
-        </Suspense>
-      </View>
-    </>
+    <RigidBody colliders='cuboid' type='fixed' position={position} restitution={2.1}>
+      <mesh
+        visible={visible}
+        scale={onHover ? [1.1, 1.1, 1.1] : [1, 1, 1]}
+        onPointerEnter={() => setOnHover(!onHover)}
+        onPointerLeave={() => setOnHover(!onHover)}
+        onClick={() => console.log(name)}
+      >
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color={onHover ? 'orange' : color} />
+      </mesh>
+    </RigidBody>
+  )
+}
+
+const defaults = { boxCount: 20 }
+
+export default function App() {
+  const gameState = useRef(
+    Array.from({ length: defaults.boxCount }, (_, x) =>
+      Array.from({ length: 1 || defaults.boxCount }, (_, y) =>
+        Array.from({ length: defaults.boxCount }, (_, z) => ({
+          position: [2 * x - defaults.boxCount, 2 * y - defaults.boxCount / 2, 2 * z - defaults.boxCount],
+        })),
+      ),
+    ).flat(2),
+  )
+
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Canvas camera={{ position: [20, 20, 20], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 5]} />
+        <Physics gravity={[0, 0, 0]}>
+          {/* <Ball /> */}
+          {/* <Paddle /> */}
+          {gameState.current.map((g) => {
+            const visible = Math.random() > 0.5
+            return (
+              <>
+                {Math.random() > 0.5 && visible && (
+                  <QuadraticBezierLine
+                    start={new Vector3(...g.position)}
+                    mid={new Vector3(...gameState.current[Math.floor(Math.random() * defaults.boxCount ** 2)].position)}
+                    end={new Vector3(...gameState.current[Math.floor(Math.random() * defaults.boxCount ** 2)].position)}
+                  />
+                )}
+                <Enemy
+                  visible={visible}
+                  key={g.position.join('_')}
+                  name={g.position.join('_')}
+                  color='hotpink'
+                  position={g.position}
+                />
+              </>
+            )
+          })}
+          {/* <Enemy color='orange' position={[2.75, 1.5, 0]} />
+          <Enemy color='hotpink' position={[-2.75, 3.5, 0]} /> */}
+        </Physics>
+        <color attach='background' args={['skyblue']} />
+        <Environment direction={[5, 5, 5]} />
+        <OrbitControls makeDefault />
+      </Canvas>
+    </Suspense>
   )
 }
