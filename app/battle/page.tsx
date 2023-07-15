@@ -1,19 +1,13 @@
-'use client'
-import * as THREE from 'three'
-import { Canvas, extend, useFrame, useThree } from '@react-three/fiber'
-import { CuboidCollider, Physics, RapierRigidBody, RigidBody } from '@react-three/rapier'
-import { Fragment, Ref, Suspense, memo, useRef, useState } from 'react'
-import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
-import {
-  AccumulativeShadows,
-  OrbitControls,
-  QuadraticBezierLine,
-  RandomizedLight,
-  Environment as EnvironmentImpl,
-  Html,
-} from '@react-three/drei'
-import { Vector3 } from 'three'
-extend({ Canvas })
+"use client"
+import * as THREE from "three"
+import { Canvas, extend } from "@react-three/fiber"
+import { Physics, RapierRigidBody, RigidBody } from "@react-three/rapier"
+import { Fragment, Suspense, useRef, useState } from "react"
+import { LoadingSpinner } from "src/components/canvas/loadingSpinner"
+import { OrbitControls, QuadraticBezierLine, Environment as EnvironmentImpl, Html } from "@react-three/drei"
+import { Vector3 } from "three"
+extend({ Canvas, THREE })
+import "./styles.css"
 
 // const Environment = memo(
 //   ({ direction = [5, 5, 5] }: { direction: Parameters<typeof RandomizedLight>[0]['position'] }) => (
@@ -35,18 +29,19 @@ const Enemy = ({
   color,
   visible,
   name,
-  hovered,
-  setHovered,
+  // hovered,
+  // setHovered,
   unit,
 }: {
   color: string
   visible: boolean
   name: string
-  hovered?: boolean
-  setHovered?: (hovered: boolean) => void
+  // hovered?: boolean
+  // setHovered?: (hovered: boolean) => void
   unit: (typeof defaults.gameState)[0]
 }) => {
   const rigidBodyRef = useRef<RapierRigidBody>()
+  const [hovered, setHovered] = useState(false)
 
   return (
     <RigidBody
@@ -65,10 +60,10 @@ const Enemy = ({
         onClick={() => console.log(name)}
       >
         <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color={hovered ? 'orange' : color} />
+        <meshStandardMaterial color={hovered ? "orange" : color} />
         {visible && (
-          <Html>
-            <div>
+          <Html distanceFactor={10}>
+            <div className='content'>
               <h1>{name}</h1>
             </div>
           </Html>
@@ -101,7 +96,7 @@ export default function App() {
         <Physics gravity={[0, 0, 0]}>
           {/* <Ball /> */}
           {/* <Paddle /> */}
-          {gameState.current.map((g) => {
+          {gameState.current.map(g => {
             const visible = Math.random() > 0.5
             return (
               <Fragment key={String(g.position)}>
@@ -127,8 +122,8 @@ export default function App() {
                 <Enemy
                   unit={g}
                   visible={visible}
-                  key={g.position.join('_')}
-                  name={g.position.join('_')}
+                  key={g.position.join("_")}
+                  name={g.position.join("_")}
                   color='hotpink'
                 />
               </Fragment>
@@ -137,7 +132,7 @@ export default function App() {
           {/* <Enemy color='orange' position={[2.75, 1.5, 0]} />
           <Enemy color='hotpink' position={[-2.75, 3.5, 0]} /> */}
         </Physics>
-        <color attach='background' args={['skyblue']} />
+        <color attach='background' args={["skyblue"]} />
         {/* <Environment direction={[5, 5, 5]} /> */}
         <OrbitControls makeDefault />
       </Canvas>

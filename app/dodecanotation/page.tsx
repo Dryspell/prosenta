@@ -12,8 +12,7 @@ function Dodecahedron({ ...props }) {
       <dodecahedronGeometry />
       <meshStandardMaterial roughness={0.75} emissive='#404057' />
       <Html distanceFactor={10}>
-        {/* @ts-expect-error */}
-        <div class='content'>
+        <div className='content'>
           hello <br />
           world
         </div>
@@ -42,7 +41,6 @@ export default function Page() {
         <pointLight position={[-10, -10, 10]} color='lightblue' />
         <Content />
       </Canvas>
-      ,
     </Suspense>
   )
 }

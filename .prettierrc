@@ -1,5 +1,5 @@
 {
-  "arrowParens": "always",
+  "arrowParens": "avoid",
   "bracketSpacing": true,
   "embeddedLanguageFormatting": "auto",
   "htmlWhitespaceSensitivity": "css",
@@ -10,7 +10,8 @@
   "quoteProps": "as-needed",
   "requirePragma": false,
   "semi": false,
-  "singleQuote": true,
+  "singleQuote": false,
+  "DoubleQuote": true,
   "tabWidth": 2,
   "trailingComma": "all",
   "useTabs": false,

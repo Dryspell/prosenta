@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
-import { Vector3 } from 'three'
 
 const View = dynamic(() => import('src/components/canvas/View').then((mod) => mod.View), {
   ssr: false,
@@ -20,7 +19,6 @@ const View = dynamic(() => import('src/components/canvas/View').then((mod) => mo
   ),
 })
 const Common = dynamic(() => import('src/components/canvas/View').then((mod) => mod.Common), { ssr: false })
-
 const MeshPortal = dynamic(() => import('src/components/canvas/MeshPortal').then((mod) => mod.PortalScene), {
   ssr: false,
 })
