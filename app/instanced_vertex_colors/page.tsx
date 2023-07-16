@@ -1,15 +1,14 @@
 'use client'
+import "./styles.css"
+import * as THREE from "three"
+import React, { useRef, useMemo, useState, useEffect, Suspense } from "react"
+import { Canvas, extend, useThree, useFrame } from "@react-three/fiber"
+import niceColors from "nice-color-palettes"
+import { Effects } from "@react-three/drei"
+import { SSAOPass, UnrealBloomPass } from "three-stdlib"
+import { LoadingSpinner } from "src/components/canvas/loadingSpinner"
 
-import * as THREE from 'three'
-import React, { useRef, useMemo, useState, useEffect, Suspense } from 'react'
-import { Canvas, extend, useThree, useFrame } from '@react-three/fiber'
-import niceColors from 'nice-color-palettes'
-import { Effects } from '@react-three/drei'
-import { SSAOPass, UnrealBloomPass } from 'three-stdlib'
-import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
-
-extend({ SSAOPass, UnrealBloomPass })
-
+extend({ SSAOPass, UnrealBloomPass, Canvas })
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -23,32 +22,17 @@ const tempObject = new THREE.Object3D()
 const tempColor = new THREE.Color()
 const data = Array.from({ length: 1000 }, () => ({ color: niceColors[17][Math.floor(Math.random() * 5)], scale: 1 }))
 
-export default function App() {
-  return (
-    <>
-      {/* <View> */}
-      <Suspense fallback={<LoadingSpinner />}>
-        <Canvas gl={{ antialias: false }} camera={{ position: [0, 0, 15], near: 5, far: 20 }}>
-          <color attach='background' args={['#f0f0f0']} />
-          <Boxes />
-          <Post />
-        </Canvas>
-      </Suspense>
-    </>
-  )
-}
-
 function Boxes() {
   const [hovered, setHovered] = useState<number | undefined>()
   const colorArray = useMemo(
-    () => Float32Array.from(new Array(1000).flatMap((_, i) => tempColor.set(data[i].color).toArray())),
+    () => Float32Array.from(new Array(1000).fill(undefined).flatMap((_, i) => tempColor.set(data[i].color).toArray())),
     [],
   )
   const meshRef = useRef<THREE.InstancedMesh>()
   const prevRef = useRef<number | undefined>()
   useEffect(() => void (prevRef.current = hovered), [hovered])
 
-  useFrame((state) => {
+  useFrame(state => {
     const time = state.clock.getElapsedTime()
     meshRef.current.rotation.x = Math.sin(time / 4)
     meshRef.current.rotation.y = Math.sin(time / 2)
@@ -75,8 +59,8 @@ function Boxes() {
     <instancedMesh
       ref={meshRef}
       args={[null, null, 1000]}
-      onPointerMove={(e) => (e.stopPropagation(), setHovered(e.instanceId))}
-      onPointerOut={(e) => setHovered(undefined)}
+      onPointerMove={e => (e.stopPropagation(), setHovered(e.instanceId))}
+      onPointerOut={e => setHovered(undefined)}
     >
       <boxGeometry args={[0.6, 0.6, 0.6]}>
         <instancedBufferAttribute attach='attributes-color' args={[colorArray, 3]} />
@@ -86,12 +70,27 @@ function Boxes() {
   )
 }
 
-function Post() {
+function PostProcessing() {
   const { scene, camera } = useThree()
   return (
     <Effects disableGamma>
       <sSAOPass args={[scene, camera]} kernelRadius={0.5} maxDistance={0.1} />
       <unrealBloomPass threshold={0.9} strength={0.75} radius={0.5} />
     </Effects>
+  )
+}
+
+export default function App() {
+  return (
+    <>
+      {/* <View> */}
+      <Suspense fallback={<LoadingSpinner />}>
+        <Canvas gl={{ antialias: false }} camera={{ position: [0, 0, 15], near: 5, far: 20 }}>
+          <color attach='background' args={["#f0f0f0"]} />
+          <Boxes />
+          <PostProcessing />
+        </Canvas>
+      </Suspense>
+    </>
   )
 }

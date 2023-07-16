@@ -1,6 +1,6 @@
 "use client"
 import * as THREE from "three"
-import { Canvas, extend } from "@react-three/fiber"
+import { Canvas, extend, useFrame } from "@react-three/fiber"
 import { Physics, RapierRigidBody, RigidBody } from "@react-three/rapier"
 import { Fragment, Suspense, useRef, useState } from "react"
 import { LoadingSpinner } from "src/components/canvas/loadingSpinner"
@@ -87,6 +87,7 @@ const defaults = {
 
 export default function App() {
   const gameState = useRef(defaults.gameState)
+  useFrame(() => {})
 
   return (
     <Suspense fallback={<LoadingSpinner />}>

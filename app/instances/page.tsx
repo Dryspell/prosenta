@@ -9,7 +9,7 @@ extend({ Canvas, CameraControls })
 
 const MeshEdgesMaterial = shaderMaterial(
   {
-    color: new THREE.Color('white'),
+    color: new THREE.Color("white"),
     size: new THREE.Vector3(1, 1, 1),
     thickness: 0.01,
     smoothness: 0.2,
@@ -30,12 +30,20 @@ const MeshEdgesMaterial = shaderMaterial(
     gl_FragColor = vec4(color, 1.0 - a);
   }`,
 )
-
 extend({ MeshEdgesMaterial })
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      meshEdgesMaterial: any
+    }
+  }
+}
+
 const o = new THREE.Object3D()
 const c = new THREE.Color()
 
-function Boxes({ length = 100000, size = [0.15, 0.15, 0.15], ...props }) {
+function Boxes({ length = 100000, size = [0.15, 0.15, 0.15] as [number, number, number], ...props }) {
   const ref =
     useRef<THREE.InstancedMesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[]>>()
   const outlines =
@@ -68,14 +76,12 @@ function Boxes({ length = 100000, size = [0.15, 0.15, 0.15], ...props }) {
   return (
     <group {...props}>
       <instancedMesh ref={ref} args={[null, null, length]}>
-        {/* @ts-expect-error */}
         <boxGeometry args={size}>
           <instancedBufferAttribute attach='attributes-color' args={[colors, 3]} />
         </boxGeometry>
         <meshLambertMaterial vertexColors toneMapped={false} />
       </instancedMesh>
       <instancedMesh ref={outlines} args={[null, null, length]}>
-        {/* @ts-expect-error */}
         <meshEdgesMaterial
           transparent
           polygonOffset
