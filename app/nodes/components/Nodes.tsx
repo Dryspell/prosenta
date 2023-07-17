@@ -22,13 +22,13 @@ const Circle = forwardRef(
 Circle.displayName = 'Circle'
 
 export function Nodes({ children }) {
-  const group = useRef<ThreeElements['group']>()
+  const group = useRef<THREE.Group>()
   const [nodes, set] = useState([])
   const lines = useMemo(() => {
     const lines = []
     for (let node of nodes)
       node.connectedTo
-        .map((ref) => [node.position, ref.current.position])
+        .map(ref => [node.position, ref.current.position])
         .forEach(([start, end]) =>
           lines.push({
             start: start.clone().add({ x: 0.35, y: 0, z: 0 }),
@@ -39,16 +39,15 @@ export function Nodes({ children }) {
   }, [nodes])
   useFrame((_, delta) =>
     // @ts-expect-error
-    group.current.children.forEach((group) => (group.children[0].material.uniforms.dashOffset.value -= delta * 10)),
+    group.current.children.forEach(group => (group.children[0].material.uniforms.dashOffset.value -= delta * 10)),
   )
   return (
     <context.Provider value={set}>
-      {/* @ts-expect-error */}
       <group ref={group}>
         {lines.map((line, index) => (
           <group key={`bezier_${index}`}>
-            <QuadraticBezierLine key={index} {...line} color='white' dashed dashScale={50} gapSize={20} />
-            <QuadraticBezierLine key={index} {...line} color='white' lineWidth={0.5} transparent opacity={0.1} />
+            <QuadraticBezierLine {...line} color='white' dashed dashScale={50} gapSize={20} />
+            <QuadraticBezierLine {...line} color='white' lineWidth={0.5} transparent opacity={0.1} />
           </group>
         ))}
       </group>

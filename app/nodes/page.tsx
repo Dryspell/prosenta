@@ -3,6 +3,7 @@ import { useState, createRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Nodes, Node } from './components/Nodes'
 import { LoadingSpinner } from 'src/components/canvas/loadingSpinner'
+import "./styles.css"
 
 export default function App() {
   const [[a, b, c, d, e]] = useState(() => [...Array(5)].map(createRef))
