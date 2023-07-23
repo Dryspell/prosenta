@@ -87,7 +87,7 @@ const defaults = {
 
 export default function App() {
   const gameState = useRef(defaults.gameState)
-  useFrame(() => {})
+  // useFrame(() => {})
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
